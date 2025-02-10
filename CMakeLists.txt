@@ -50,3 +50,17 @@ target_link_libraries("mini_unet" PUBLIC
     ${OpenCV_LIBS}
     TIMER
 )
+
+file(GLOB FUNCTIONS_SRC CONFIGURE_DEPENDS
+    "src/functions/*.hpp"
+    "src/functions/*.cpp"
+)
+add_executable("functions" ${FUNCTIONS_SRC})
+target_include_directories("functions" PUBLIC
+    src/
+)
+target_link_libraries("functions" PUBLIC
+    ${TORCH_LIBRARIES}
+    ${OpenCV_LIBS}
+    TIMER
+)
