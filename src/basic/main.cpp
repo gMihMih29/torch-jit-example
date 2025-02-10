@@ -14,7 +14,18 @@ void predict(torch::jit::script::Module& model, torch::Tensor input) {
     std::cout << "Output: " << output1 << std::endl << "Elaplsed: " << t.GetMicroseconds() << std::endl;
 }
 
+// class MyModel(Module):
+// def __init__(self, n_in = 100, n_out = 50):
+//     super(MyModel, self).__init__()
+//     self.linear1 = Linear(in_features=n_in, out_features=n_in)
+//     self.linear2 = Linear(in_features=n_in, out_features=n_out)
+
+// def forward(self, x):
+//     out = self.linear1(x)
+//     out = self.linear2(out)
+//     return out
 void test_my_model() {
+
     std::string scripted_model_path = "./models/scripted_MyModel.pt";
     std::string traced_model_path = "./models/traced_MyModel.pt";
     torch::jit::script::Module scripted_model, traced_model;
@@ -53,6 +64,14 @@ void test_my_model() {
     predict(traced_model, in1);
 }
 
+// class MyModelWithControlFlow(Module):
+//     def __init__(self):
+//         super(MyModelWithControlFlow, self).__init__()
+
+//     def forward(self, x):
+//         if torch.sum(x) > 0:
+//           return x
+//         return -x
 void test_my_model_with_control_flow() {
     std::cout << "\n\n\n";
     Timer t;
