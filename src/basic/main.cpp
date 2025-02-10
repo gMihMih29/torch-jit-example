@@ -27,7 +27,7 @@ void test_my_model() {
     }
     torch::Tensor input_tensor = torch::randn({1, 10});
     std::cout << "Input tensor: " << input_tensor << std::endl;
-
+    std::cout << "Scripted:\n";
     predict(scripted_model, input_tensor);
 
     std::cout << "\n\n\n";
@@ -41,6 +41,7 @@ void test_my_model() {
     input_tensor = torch::randn({1, 10});
     std::cout << "Input tensor: " << input_tensor << std::endl;
 
+    std::cout << "Traced:\n";
     predict(traced_model, input_tensor);
 
     std::cout << '\n';

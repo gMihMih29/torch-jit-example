@@ -28,36 +28,52 @@ cv::Mat tensor_to_mat(const torch::Tensor& tensor) {
     return mat;
 }
 
-void test_model(torch::jit::script::Module& model, std::string prefix_out_name) {
-    float threshold = 0.5f;
-
-    cv::Mat image_10 = cv::imread("dataset/image/10.jpg");
+void test_case(torch::jit::script::Module& model, std::string img_path, std::string out_name, float threshold = 0.5f) {
+    cv::Mat image_10 = cv::imread(img_path);
     auto transformed_img = transform_image(image_10, 224, 224);
+
     std::vector<torch::jit::IValue> inputs;
     inputs.push_back(transformed_img);
+
     auto output = model.forward(inputs).toTensor();
     output = ((output / torch::max(output).item()) > threshold);
     auto output_img = tensor_to_mat(output);
-    cv::imwrite(prefix_out_name + "_out_10.jpg", output_img);
+    cv::imwrite(out_name, output_img);
+}
 
-    cv::Mat image_11 = cv::imread("dataset/image/11.jpg");
-    auto transformed_img11 = transform_image(image_11, 224, 224);
-    std::vector<torch::jit::IValue> inputs11;
-    inputs11.push_back(transformed_img11);
-    auto output11 = model.forward(inputs11).toTensor();
-    // output11 = ((output11 / torch::max(output11).item()) > threshold).to(torch::kFloat32);
-    output11 = ((output11 / torch::max(output11).item()) > threshold);
-    auto output_img11 = tensor_to_mat(output11);
-    cv::imwrite(prefix_out_name + "_out_11.jpg", output_img11);
+void test_model(torch::jit::script::Module& model, std::string prefix_out_name) {
 
-    cv::Mat image_23 = cv::imread("dataset/image/23.jpg");
-    auto transformed_img23 = transform_image(image_23, 224, 224);
-    std::vector<torch::jit::IValue> inputs23;
-    inputs23.push_back(transformed_img23);
-    auto output23 = model.forward(inputs23).toTensor();
-    output23 = ((output23 / torch::max(output23).item()) > threshold);
-    auto output_img23 = tensor_to_mat(output23);
-    cv::imwrite(prefix_out_name + "_out_23.jpg", output_img23);
+    test_case(model, "dataset/image/10.jpg", prefix_out_name + "_out_10.jpg");
+    test_case(model, "dataset/image/11.jpg", prefix_out_name + "_out_11.jpg");
+    test_case(model, "dataset/image/23.jpg", prefix_out_name + "_out_23.jpg");
+
+    // cv::Mat image_10 = cv::imread("dataset/image/10.jpg");
+    // auto transformed_img = transform_image(image_10, 224, 224);
+    // std::vector<torch::jit::IValue> inputs;
+    // inputs.push_back(transformed_img);
+    // auto output = model.forward(inputs).toTensor();
+    // output = ((output / torch::max(output).item()) > threshold);
+    // auto output_img = tensor_to_mat(output);
+    // cv::imwrite(prefix_out_name + "_out_10.jpg", output_img);
+
+    // cv::Mat image_11 = cv::imread("dataset/image/11.jpg");
+    // auto transformed_img11 = transform_image(image_11, 224, 224);
+    // std::vector<torch::jit::IValue> inputs11;
+    // inputs11.push_back(transformed_img11);
+    // auto output11 = model.forward(inputs11).toTensor();
+    // // output11 = ((output11 / torch::max(output11).item()) > threshold).to(torch::kFloat32);
+    // output11 = ((output11 / torch::max(output11).item()) > threshold);
+    // auto output_img11 = tensor_to_mat(output11);
+    // cv::imwrite(prefix_out_name + "_out_11.jpg", output_img11);
+
+    // cv::Mat image_23 = cv::imread("dataset/image/23.jpg");
+    // auto transformed_img23 = transform_image(image_23, 224, 224);
+    // std::vector<torch::jit::IValue> inputs23;
+    // inputs23.push_back(transformed_img23);
+    // auto output23 = model.forward(inputs23).toTensor();
+    // output23 = ((output23 / torch::max(output23).item()) > threshold);
+    // auto output_img23 = tensor_to_mat(output23);
+    // cv::imwrite(prefix_out_name + "_out_23.jpg", output_img23);
 }
 
 int main() {
